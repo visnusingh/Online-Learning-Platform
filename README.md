@@ -54,3 +54,21 @@ Built using Node.js, Express, MySQL, and modern front-end technologies, this pro
 
 ## 📂 Project Structure
 
+/public → Frontend HTML, CSS, JS
+/uploads → Uploaded thumbnails / videos
+server.js → Main backend logic
+.env → Secret keys (not included in repo)
+package.json → Node project config
+
+.env
+PORT=5001
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=yourpassword
+DB_NAME=online_learning
+JWT_SECRET=yourjwtsecret
+TURNSTILE_SECRET_KEY=yourturnstilekey
+
+
+Start the server:  node server.js
+Open browser:  http://localhost:5001
