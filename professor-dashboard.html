@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Video - Professor</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    body {
+      background: url('background.jpg') no-repeat center center/cover;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .upload-container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    select {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+    }
+
+    .upload-btn {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      background-color: #3B82F6;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .upload-btn:hover {
+      background-color: #2563EB;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .profile-box {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .profile-box p {
+      margin: 4px 0;
+    }
+
+    footer {
+      background-color: #000000;
+      color: #FFFFFF;
+      padding: 25px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .social-icons a {
+      color: #FFFFFF;
+      font-size: 24px;
+      margin: 0 12px;
+      transition: color 0.3s;
+    }
+
+    .social-icons a:hover {
+      color: #93C5FD;
+    }
+
+    #prof-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+      border: 2px solid #fff;
+    }
+  </style>
+</head>
+<body>
+
+
+  <header>
+    <div class="logo-container">
+      <img src="logo.png" alt="University Logo" class="logo">
+    </div>
+    <nav class="menu">
+      <ul>
+        <li class="dropdown">
+          <a href="#">☰ Menu</a>
+          <ul class="dropdown-content">
+            <li><a href="professor-videos.html">My uploaded Video</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+
+  <div class="upload-container">
+    <div class="profile-box">
+      <h3>👨‍🏫 Professor Profile</h3>
+      <img id="prof-pic" src="default-profile.png" alt="Profile Picture" />
+      <p><strong>Name:</strong> <span id="prof-name">Loading...</span></p>
+      <p><strong>Email:</strong> <span id="prof-email">Loading...</span></p>
+
+      <form id="upload-pic-form" enctype="multipart/form-data" style="margin-top: 10px;">
+        <label for="profilePicture">Update Profile Picture</label>
+        <input type="file" id="profilePicture" name="profilePicture" accept="image/*" required />
+        <button type="submit" class="upload-btn" style="margin-top: 10px;">Upload</button>
+      </form>
+    </div>
+
+    <h2>📤 Upload New Video</h2>
+    <form id="upload-form">
+      <div class="form-group">
+        <label for="title">Video Title</label>
+        <input type="text" id="title" placeholder="Enter video title" required />
+      </div>
+
+      <div class="form-group">
+        <label for="thumbnail">Thumbnail Image</label>
+        <input type="file" id="thumbnail" accept="image/*" required />
+      </div>
+
+      <div class="form-group">
+        <label for="upload-type">Upload Type</label>
+        <select id="upload-type" required onchange="toggleUploadOption()">
+          <option value="">Select Option</option>
+          <option value="link">Link (YouTube, etc.)</option>
+          <option value="file">Upload from Device</option>
+        </select>
+      </div>
+
+      <div class="form-group hidden" id="link-input">
+        <label for="video-link">Video Link</label>
+        <input type="text" id="video-link" placeholder="Paste video URL" />
+      </div>
+
+      <div class="form-group hidden" id="file-input">
+        <label for="video-file">Upload Video</label>
+        <input type="file" id="video-file" accept="video/*" />
+      </div>
+
+      <button type="submit" class="upload-btn">Submit Video</button>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>Project by <strong>Visnu Singh</strong></p>
+    <div class="social-icons">
+      <a href="https://www.linkedin.com/in/visnusingh370" target="_blank"><i class="fab fa-linkedin"></i></a>
+      <a href="https://www.github.com/visnusingh" target="_blank"><i class="fab fa-github"></i></a>
+      <a href="mailto:visnusingh370@gmail.com"><i class="fas fa-envelope"></i></a>
+    </div>
+  </footer>
+
+
+  <script>
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "choose-role.html";
+    }
+
+    function toggleUploadOption() {
+      const type = document.getElementById('upload-type').value;
+      document.getElementById('link-input').classList.add('hidden');
+      document.getElementById('file-input').classList.add('hidden');
+
+      if (type === 'link') {
+        document.getElementById('link-input').classList.remove('hidden');
+      } else if (type === 'file') {
+        document.getElementById('file-input').classList.remove('hidden');
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const uploadForm = document.getElementById("upload-form");
+      const name = sessionStorage.getItem("name");
+      const email = sessionStorage.getItem("email");
+      const role = sessionStorage.getItem("role");
+
+      if (!name || !email || role !== "professor") {
+        alert("Unauthorized access.");
+        window.location.href = "choose-role.html";
+        return;
+      }
+
+      document.getElementById("prof-name").textContent = name;
+      document.getElementById("prof-email").textContent = email;
+
+
+      fetch(`http://localhost:5001/professor-profile?email=${email}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.profile_picture) {
+            document.getElementById("prof-pic").src = `http://localhost:5001${data.profile_picture}`;
+          }
+        })
+        .catch(err => console.error("Profile picture load error:", err));
+
+      document.getElementById("upload-pic-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const file = document.getElementById("profilePicture").files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("profilePicture", file);
+        formData.append("email", email);
+
+        try {
+          const res = await fetch("http://localhost:5001/upload-profile-picture", {
+            method: "POST",
+            body: formData
+          });
+
+          const result = await res.json();
+          if (res.ok) {
+            alert("✅ Profile picture updated!");
+            document.getElementById("prof-pic").src = `http://localhost:5001${result.profile_picture}`;
+          } else {
+            alert("❌ Upload failed: " + result.message);
+          }
+        } catch (err) {
+          console.error("Upload error:", err);
+          alert("❌ Error uploading profile picture.");
+        }
+      });
+
+      //  Upload video form
+      uploadForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const title = document.getElementById("title").value;
+        const thumbnail = document.getElementById("thumbnail").files[0];
+        const type = document.getElementById("upload-type").value;
+        const link = document.getElementById("video-link").value;
+        const file = document.getElementById("video-file").files[0];
+
+        if (!title || !thumbnail || !type || (type === "link" && !link) || (type === "file" && !file)) {
+          alert("Please fill in all required fields.");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("type", type);
+        formData.append("professorEmail", email);
+        formData.append("thumbnail", thumbnail);
+        if (type === "link") {
+          formData.append("videoLink", link);
+        } else {
+          formData.append("videoFile", file);
+        }
+
+        try {
+          const res = await fetch("http://localhost:5001/upload", {
+            method: "POST",
+            body: formData
+          });
+
+          const result = await res.json();
+          if (res.ok) {
+            alert("✅ Video uploaded successfully!");
+            uploadForm.reset();
+            toggleUploadOption();
+          } else {
+            alert("❌ " + (result.message || "Upload failed."));
+          }
+        } catch (err) {
+          console.error("Upload error:", err);
+          alert("An error occurred during upload.");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

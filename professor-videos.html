@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Uploaded Videos - Professor</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    body {
+      background: url('background.jpg') no-repeat center center/cover;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content {
+      padding: 40px;
+      flex: 1;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .videos-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .video-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .video-card:hover {
+      transform: scale(1.02);
+    }
+
+    .video-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .video-card h3 {
+      margin: 10px 0 5px;
+      font-size: 18px;
+    }
+
+    .video-card p {
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: #ddd;
+    }
+
+    .video-card video {
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+
+    .delete-btn {
+      background: #ef4444;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .delete-btn:hover {
+      background-color: #dc2626;
+    }
+
+    footer {
+      background-color: #000000;
+      color: #FFFFFF;
+      padding: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-container">
+      <img src="logo.png" alt="University Logo" class="logo">
+    </div>
+    <nav class="menu">
+      <ul>
+        <li class="dropdown">
+          <a href="#">☰ Menu</a>
+          <ul class="dropdown-content">
+            <li><a href="professor-dashboard.html">Upload a Video</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+
+  <div class="content">
+    <h2>📺 My Uploaded Videos</h2>
+    <div id="videos" class="videos-container"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>Project by <strong>Visnu Singh</strong></p>
+    <div class="social-icons">
+      <a href="https://www.linkedin.com/in/visnusingh370" target="_blank"><i class="fab fa-linkedin"></i></a>
+      <a href="https://www.github.com/visnusingh" target="_blank"><i class="fab fa-github"></i></a>
+      <a href="mailto:visnusingh370@gmail.com"><i class="fas fa-envelope"></i></a>
+    </div>
+  </footer>
+
+
+  <script>
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "choose-role.html";
+    }
+
+    async function loadMyVideos() {
+      const email = sessionStorage.getItem("email");
+      const role = sessionStorage.getItem("role");
+
+      if (!email || role !== "professor") {
+        alert("Unauthorized access.");
+        window.location.href = "choose-role.html";
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:5001/videos");
+        const videos = await res.json();
+
+        const myVideos = videos.filter(v => v.professor_email === email);
+        const container = document.getElementById("videos");
+
+        if (myVideos.length === 0) {
+          container.innerHTML = "<p>You haven't uploaded any videos yet.</p>";
+          return;
+        }
+
+        container.innerHTML = "";
+
+        myVideos.forEach((video, index) => {
+          const videoWrapperId = `video-${index}`;
+
+          const card = document.createElement("div");
+          card.className = "video-card";
+
+          card.innerHTML = `
+            <img src="${video.thumbnail_url}" alt="Thumbnail" />
+            <h3>${video.title}</h3>
+            <p>👤 Uploaded by: ${video.professor_name}</p>
+            <div id="${videoWrapperId}" class="video-wrapper" style="display: none;"></div>
+            <button class="delete-btn" onclick="event.stopPropagation(); deleteVideo(${video.id})">Delete</button>
+          `;
+
+          card.addEventListener("click", () => {
+            const wrapper = document.getElementById(videoWrapperId);
+            if (wrapper.innerHTML.trim() === "") {
+              const embed = video.video_url.includes("http")
+                ? `<a href="${video.video_url}" target="_blank" style="color: #93C5FD;">📺 Open Video Link</a>`
+                : `<video src="http://localhost:5001${video.video_url}" controls style="width: 100%; border-radius: 8px; margin-top: 10px;"></video>`;
+              wrapper.innerHTML = embed;
+            }
+            wrapper.style.display = wrapper.style.display === "none" ? "block" : "none";
+          });
+
+          container.appendChild(card);
+        });
+      } catch (err) {
+        console.error("Fetch error:", err);
+        alert("Failed to load videos.");
+      }
+    }
+
+    async function deleteVideo(videoId) {
+      const email = sessionStorage.getItem("email");
+      if (!confirm("Are you sure you want to delete this video?")) return;
+
+      try {
+        const res = await fetch(`http://localhost:5001/videos/${videoId}?professorEmail=${email}`, {
+          method: "DELETE"
+        });
+        const result = await res.json();
+
+        if (res.ok) {
+          alert(result.message);
+          loadMyVideos();
+        } else {
+          alert("Error: " + result.message);
+        }
+      } catch (err) {
+        console.error("Delete error:", err);
+        alert("Something went wrong while deleting.");
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", loadMyVideos);
+  </script>
+</body>
+</html>

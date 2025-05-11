@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Professors - Online Learning Platform</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: url('background.jpg') no-repeat center center/cover;
+      background-attachment: fixed;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .logo {
+      height: 50px;
+    }
+
+    .menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .menu li {
+      position: relative;
+    }
+
+    .menu a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 16px;
+      display: block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: #1e1e1e;
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 999;
+    }
+
+    .dropdown-content a {
+      padding: 8px 12px;
+      display: block;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    main {
+      flex: 1;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 32px;
+    }
+
+    .professor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .professor-card {
+        background-color: rgba(0, 0, 0, 0.6); 
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+      
+
+    .professor-card img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid white;
+      margin-bottom: 15px;
+    }
+
+    .professor-card h3 {
+      margin: 10px 0 5px;
+      font-size: 18px;
+    }
+
+    .prof-email {
+      color: white;
+      font-size: 14px;
+      word-break: break-all;
+    }
+
+    footer {
+      background-color: #000000;
+      color: #FFFFFF;
+      padding: 25px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .social-icons a {
+      color: #FFFFFF;
+      font-size: 24px;
+      margin: 0 12px;
+      transition: color 0.3s;
+    }
+
+    .social-icons a:hover {
+      color: #93C5FD;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-container">
+      <img src="logo.png" alt="University Logo" class="logo">
+    </div>
+    <nav class="menu">
+      <ul>
+        <li class="dropdown">
+          <a href="#">☰ Menu</a>
+          <ul class="dropdown-content">
+            <li><a href="choose-role.html">Log In</a></li>
+            <li><a href="courses.html">Courses Available</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+
+  <main>
+    <h1>👨‍🏫 Meet Our Professors</h1>
+    <div class="professor-grid" id="professorGrid"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>Project by <strong>Visnu Singh</strong></p>
+    <div class="social-icons">
+      <a href="https://www.linkedin.com/in/visnusingh370" target="_blank"><i class="fab fa-linkedin"></i></a>
+      <a href="https://www.github.com/visnusingh" target="_blank"><i class="fab fa-github"></i></a>
+      <a href="mailto:visnusingh370@gmail.com"><i class="fas fa-envelope"></i></a>
+    </div>
+  </footer>
+
+
+  <script>
+    async function fetchProfessors() {
+      try {
+        const res = await fetch("http://localhost:5001/all-professors");
+        const data = await res.json();
+
+        const grid = document.getElementById("professorGrid");
+        grid.innerHTML = "";
+
+        data.forEach(prof => {
+          const card = document.createElement("div");
+          card.className = "professor-card";
+
+          const profileImg = prof.profile_picture
+            ? `http://localhost:5001${prof.profile_picture}`
+            : "default-profile.png";
+
+          card.innerHTML = `
+            <img src="${profileImg}" alt="Professor Picture">
+            <h3>${prof.name}</h3>
+            <p class="prof-email">${prof.email}</p>
+          `;
+
+          grid.appendChild(card);
+        });
+
+      } catch (error) {
+        console.error("Error fetching professors:", error);
+        document.getElementById("professorGrid").innerHTML = "<p>Failed to load professors.</p>";
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", fetchProfessors);
+  </script>
+
+</body>
+</html>
